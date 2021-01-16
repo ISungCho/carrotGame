@@ -1,0 +1,86 @@
+html, body {
+	width: 100%;
+	height: 100%;
+}
+body {
+	margin: 0;
+}
+.contents {
+	width: 100%;
+	height: 100%;
+	background-image: url('./img/background.png');
+	background-size: cover;
+	background-repeat: no-repeat;
+}
+.top_area{
+	width: 100%;
+	height: 50%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+.bottom_area{
+	width: 100%;
+	height: 50%;
+}
+.result_area{
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 3;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	visibility: hidden;
+}
+.result_wrapper{
+	width: 300px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	background-color: rgba(0,0,0, 0.5);
+	color: white;
+	font-size: 30px;
+	border-radius: 10px;
+}
+.operation {
+	border: 2px solid #000000;
+	padding: 5px 8px;
+	margin: 10px;
+	border-radius: 4px;
+	font-size: 20px;
+}
+.button {
+	background-color: wheat;
+	outline: none;
+	cursor: pointer;
+}
+.button:hover{
+	transform: scale(1.2);
+}
+.timer {
+	background-color: #ffffff;
+}
+.counter {
+	border-radius: 50%;
+	background-color: #f9938d;
+	color: white;
+	font-weight: bold;
+}
+.item-wrapper {
+	position: absolute;
+}
+.item {
+	width: 60px;
+	height: 60px;
+	cursor: pointer;
+}
+.item:hover{
+	transform: scale(1.2);
+}
+
+
