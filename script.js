@@ -21,6 +21,12 @@ const resultText = document.querySelector('.result_text')
 const bottomArea = document.querySelector('.bottom_area')
 const bottomAreaPos = bottomArea.getBoundingClientRect()
 
+const carrotSound = new Audio('./sound/carrot_pull.mp3')
+const bugSound = new Audio('./sound/bug_pull.mp3')
+const winSound = new Audio('./sound/game_win.mp3')
+const alertSound = new Audio('./sound/alert.mp3')
+const bgSound = new Audio('./sound/bg.mp3')
+
 replayButton.addEventListener('click', (e) => {
 	if(status === END_STATUS){
 		status = PLAY_STATUS
@@ -44,16 +50,20 @@ playButton.addEventListener('click', (e) => {
 	}
 })
 bottomArea.addEventListener('click', (e) => {
+	if(status !== PLAY_STATUS) return 
 	if(e.target.className.includes('carrot')){
 		count--
 		counterClass.innerHTML = count
+		carrotSound.play()
 		if(count <= 0){
 			status = END_STATUS
 			resultText.innerHTML = 'YOU WIN!'
+			winSound.play()
 		}
 		bottomArea.removeChild(e.target.parentNode) 
 	} else if(e.target.className.includes('bug')){
 		status = END_STATUS
+		bugSound.play()
 		resultText.innerHTML = 'YOU LOSE!'
 	}
 })
@@ -65,6 +75,7 @@ const startGame = () => {
 	counterClass.innerHTML = START_COUNT
 	setTimer()
 	setCounter()
+	bgSound.play()
 }
 
 const setCounter = () => {
@@ -104,6 +115,7 @@ const setTimer = () => {
 			resultArea.style.visibility = 'visible'
 			playButton.style.visibility = 'hidden'
 			clearInterval(timer)
+			bgSound.pause()
 			return
 		} else if(status === PUASE_STATUS){
 			return 

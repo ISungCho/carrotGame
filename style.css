@@ -1,3 +1,9 @@
+:root {
+	--border-radius: 4px;
+	--itme-width: 60px;
+	--itme-height: 60px;
+}
+
 html, body {
 	width: 100%;
 	height: 100%;
@@ -75,8 +81,8 @@ body {
 	position: absolute;
 }
 .item {
-	width: 60px;
-	height: 60px;
+	width: var(--itme-width);
+	height: var(--itme-height);
 	cursor: pointer;
 }
 .item:hover{
