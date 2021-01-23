@@ -21,13 +21,13 @@ const winSound = new Audio('./sound/game_win.mp3')
 const alertSound = new Audio('./sound/alert.mp3')
 const bgSound = new Audio('./sound/bg.mp3')
 
-let isPlay = false
+let started = false
 let count = CARROT_COUNT
 let time = GAME_DURATION_SEC
 
 popUpRefresh.addEventListener('click', (e) => {
-	if(!isPlay){
-		isPlay = true
+	if(!started){
+		started = true
 		popUp.style.visibility = 'hidden'
 		playButton.style.visibility = 'visible'
 		field.innerHTML = ''
@@ -35,35 +35,38 @@ popUpRefresh.addEventListener('click', (e) => {
 	}
 })
 playButton.addEventListener('click', (e) => {
-	if(isPlay){
-		isPlay = false
+	if(started){
+		started = false
 		playButton.innerHTML = '<i class="fas fa-play"></i>'
 	} else{
-		isPlay = true
+		started = true
 		playButton.innerHTML = '<i class="fas fa-stop"></i>'
 		startGame()
 	}
 })
-field.addEventListener('click', (e) => {
-	if(!isPlay) return 
+
+field.addEventListener('click', onFieldClick)
+
+function onFieldClick (e) {
+	if(!started) return 
 	if(e.target.className.includes('carrot')){
 		count--
 		gameCounter.innerHTML = count
 		carrotSound.play()
 		if(count <= 0){
-			isPlay = false
+			started = false
 			popUpText.innerHTML = 'YOU WIN!'
 			winSound.play()
 		}
 		field.removeChild(e.target.parentNode) 
 	} else if(e.target.className.includes('bug')){
-		isPlay = false
+		started = false
 		bugSound.play()
 		popUpText.innerHTML = 'YOU LOSE!'
 	}
-})
+}
 
-const startGame = () => {
+function startGame () {
 	time = GAME_DURATION_SEC
 	count = CARROT_COUNT
 	timerIndicator.innerHTML = `00:${GAME_DURATION_SEC}`
@@ -73,7 +76,7 @@ const startGame = () => {
 	bgSound.play()
 }
 
-const setCounter = () => {
+function setCounter () {
 	for(let i = 0; i < CARROT_COUNT; i++){
 		const carrot = document.createElement('div')
 		carrot.setAttribute('class', 'item-wrapper')
@@ -94,13 +97,13 @@ const setCounter = () => {
 	}
 }
 
-const setTimer = () => {
+function setTimer () {
 	const timer = setInterval(() => {
-		if(isPlay){
+		if(started){
 			let timeText = GAME_DURATION_SEC
 			time -= 1
 			if(time < 0){
-				isPlay = false
+				started = false
 				popUpText.innerHTML = 'YOU LOSE!'
 			} else if(time < 10){
 				timeText = '0' + time
