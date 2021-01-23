@@ -52,16 +52,16 @@ function onFieldClick (e) {
 	if(e.target.className.includes('carrot')){
 		count--
 		gameCounter.innerHTML = count
-		carrotSound.play()
+		playSound(carrotSound)
 		if(count <= 0){
 			started = false
 			popUpText.innerHTML = 'YOU WIN!'
-			winSound.play()
+			playSound(winSound)
 		}
 		field.removeChild(e.target.parentNode) 
 	} else if(e.target.className.includes('bug')){
 		started = false
-		bugSound.play()
+		playSound(bugSound)
 		popUpText.innerHTML = 'YOU LOSE!'
 	}
 }
@@ -73,7 +73,7 @@ function startGame () {
 	gameCounter.innerHTML = CARROT_COUNT
 	setTimer()
 	initGame()
-	bgSound.play()
+	playSound(bgSound)
 }
 
 function initGame () {
@@ -101,6 +101,15 @@ function randomNumber(min, max){
 	return Math.random() * (max - min) + min
 }
 
+function playSound(sound){
+	sound.currentTime = 0
+	sound.play()
+}
+
+function stopSound(sound){
+	sound.pause()
+}
+
 function setTimer () {
 	const timer = setInterval(() => {
 		if(started){
@@ -117,7 +126,7 @@ function setTimer () {
 			popUp.style.visibility = 'visible'
 			playButton.style.visibility = 'hidden'
 			clearInterval(timer)
-			bgSound.pause()
+			stopSound(bgSound)
 			return
 		}
 	}, 1000)
