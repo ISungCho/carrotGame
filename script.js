@@ -1,21 +1,19 @@
-const START_COUNT = 10
-const START_TIME = 10
+'use strict' +
+''
+const CARROT_SIZE = 60
+const CARROT_COUNT = 10
+const BUG_COUNT = 10
+const GAME_DURATION_SEC = 10
 
-let isPlay = false
-let count = START_COUNT
-let time = START_TIME
-
+const field = document.querySelector('.game__field')
+const fieldRect = field.getBoundingClientRect()
 const playButton = document.querySelector('.game__button')
-const replayButton = document.querySelector('.pop-up__refresh')
+const timerIndicator = document.querySelector('.game__timer')
+const gameCounter = document.querySelector('.game__count')
 
-const timerClass = document.querySelector('.game__timer')
-const counterClass = document.querySelector('.game__count')
-
-const resultArea = document.querySelector('.pop-up')
-const resultText = document.querySelector('.pop-up__message')
-
-const bottomArea = document.querySelector('.game__field')
-const bottomAreaPos = bottomArea.getBoundingClientRect()
+const popUp = document.querySelector('.pop-up')
+const popUpText = document.querySelector('.pop-up__message')
+const popUpRefresh = document.querySelector('.pop-up__refresh')
 
 const carrotSound = new Audio('./sound/carrot_pull.mp3')
 const bugSound = new Audio('./sound/bug_pull.mp3')
@@ -23,12 +21,16 @@ const winSound = new Audio('./sound/game_win.mp3')
 const alertSound = new Audio('./sound/alert.mp3')
 const bgSound = new Audio('./sound/bg.mp3')
 
-replayButton.addEventListener('click', (e) => {
+let isPlay = false
+let count = CARROT_COUNT
+let time = GAME_DURATION_SEC
+
+popUpRefresh.addEventListener('click', (e) => {
 	if(!isPlay){
 		isPlay = true
-		resultArea.style.visibility = 'hidden'
+		popUp.style.visibility = 'hidden'
 		playButton.style.visibility = 'visible'
-		bottomArea.innerHTML = ''
+		field.innerHTML = ''
 		startGame()
 	}
 })
@@ -42,70 +44,70 @@ playButton.addEventListener('click', (e) => {
 		startGame()
 	}
 })
-bottomArea.addEventListener('click', (e) => {
+field.addEventListener('click', (e) => {
 	if(!isPlay) return 
 	if(e.target.className.includes('carrot')){
 		count--
-		counterClass.innerHTML = count
+		gameCounter.innerHTML = count
 		carrotSound.play()
 		if(count <= 0){
 			isPlay = false
-			resultText.innerHTML = 'YOU WIN!'
+			popUpText.innerHTML = 'YOU WIN!'
 			winSound.play()
 		}
-		bottomArea.removeChild(e.target.parentNode) 
+		field.removeChild(e.target.parentNode) 
 	} else if(e.target.className.includes('bug')){
 		isPlay = false
 		bugSound.play()
-		resultText.innerHTML = 'YOU LOSE!'
+		popUpText.innerHTML = 'YOU LOSE!'
 	}
 })
 
 const startGame = () => {
-	time = START_TIME
-	count = START_COUNT
-	timerClass.innerHTML = `00:${START_TIME}`
-	counterClass.innerHTML = START_COUNT
+	time = GAME_DURATION_SEC
+	count = CARROT_COUNT
+	timerIndicator.innerHTML = `00:${GAME_DURATION_SEC}`
+	gameCounter.innerHTML = CARROT_COUNT
 	setTimer()
 	setCounter()
 	bgSound.play()
 }
 
 const setCounter = () => {
-	for(let i = 0; i < START_COUNT; i++){
+	for(let i = 0; i < CARROT_COUNT; i++){
 		const carrot = document.createElement('div')
 		carrot.setAttribute('class', 'item-wrapper')
-		const randomX = Math.floor(Math.random() * (bottomAreaPos.width - 60))
-		const randomY = Math.floor(Math.random() * (bottomAreaPos.height - 60))
+		const randomX = Math.floor(Math.random() * (fieldRect.width - CARROT_SIZE))
+		const randomY = Math.floor(Math.random() * (fieldRect.height - CARROT_SIZE))
 		carrot.style.transform = `translate(${randomX}px, ${randomY}px)`
 		carrot.innerHTML = `<img src="./img/carrot.png" class="item carrot">`
-		bottomArea.appendChild(carrot)
+		field.appendChild(carrot)
 	}
-	for(let i = 0; i < START_COUNT; i++){
+	for(let i = 0; i < CARROT_COUNT; i++){
 		const bug = document.createElement('div')
 		bug.setAttribute('class', 'item-wrapper')
-		const randomX = Math.floor(Math.random() * (bottomAreaPos.width - 60))
-		const randomY = Math.floor(Math.random() * (bottomAreaPos.height - 60))
+		const randomX = Math.floor(Math.random() * (fieldRect.width - CARROT_SIZE))
+		const randomY = Math.floor(Math.random() * (fieldRect.height - CARROT_SIZE))
 		bug.style.transform = `translate(${randomX}px, ${randomY}px)`
 		bug.innerHTML = `<img src="./img/bug.png" class="item bug">`
-		bottomArea.appendChild(bug)
+		field.appendChild(bug)
 	}
 }
 
 const setTimer = () => {
 	const timer = setInterval(() => {
 		if(isPlay){
-			let timeText = START_TIME
+			let timeText = GAME_DURATION_SEC
 			time -= 1
 			if(time < 0){
 				isPlay = false
-				resultText.innerHTML = 'YOU LOSE!'
+				popUpText.innerHTML = 'YOU LOSE!'
 			} else if(time < 10){
 				timeText = '0' + time
-				timerClass.innerHTML = `00:${timeText}`
+				timerIndicator.innerHTML = `00:${timeText}`
 			}
 		} else {
-			resultArea.style.visibility = 'visible'
+			popUp.style.visibility = 'visible'
 			playButton.style.visibility = 'hidden'
 			clearInterval(timer)
 			bgSound.pause()
