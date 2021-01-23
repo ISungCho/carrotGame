@@ -1,6 +1,6 @@
 'use strict' +
 ''
-const CARROT_SIZE = 60
+const ITEM_SIZE = 60
 const CARROT_COUNT = 10
 const BUG_COUNT = 10
 const GAME_DURATION_SEC = 10
@@ -72,29 +72,33 @@ function startGame () {
 	timerIndicator.innerHTML = `00:${GAME_DURATION_SEC}`
 	gameCounter.innerHTML = CARROT_COUNT
 	setTimer()
-	setCounter()
+	initGame()
 	bgSound.play()
 }
 
-function setCounter () {
-	for(let i = 0; i < CARROT_COUNT; i++){
-		const carrot = document.createElement('div')
-		carrot.setAttribute('class', 'item-wrapper')
-		const randomX = Math.floor(Math.random() * (fieldRect.width - CARROT_SIZE))
-		const randomY = Math.floor(Math.random() * (fieldRect.height - CARROT_SIZE))
-		carrot.style.transform = `translate(${randomX}px, ${randomY}px)`
-		carrot.innerHTML = `<img src="./img/carrot.png" class="item carrot">`
-		field.appendChild(carrot)
+function initGame () {
+	addItem('carrot', CARROT_COUNT)
+	addItem('bug', BUG_COUNT)
+}
+
+function addItem (itemName, count){
+	const x1 = 0
+	const y1 = 0
+	const x2 = fieldRect.width - ITEM_SIZE
+	const y2 = fieldRect.height - ITEM_SIZE
+	for(let i = 0; i < count; i++){
+		const item = document.createElement('div')
+		item.setAttribute('class', 'item-wrapper')
+		const randomX = randomNumber(x1, x2)
+		const randomY = randomNumber(y1, y2)
+		item.style.transform = `translate(${randomX}px, ${randomY}px)`
+		item.innerHTML = `<img src="./img/${itemName}.png" class="item ${itemName}">`
+		field.appendChild(item)
 	}
-	for(let i = 0; i < CARROT_COUNT; i++){
-		const bug = document.createElement('div')
-		bug.setAttribute('class', 'item-wrapper')
-		const randomX = Math.floor(Math.random() * (fieldRect.width - CARROT_SIZE))
-		const randomY = Math.floor(Math.random() * (fieldRect.height - CARROT_SIZE))
-		bug.style.transform = `translate(${randomX}px, ${randomY}px)`
-		bug.innerHTML = `<img src="./img/bug.png" class="item bug">`
-		field.appendChild(bug)
-	}
+}
+
+function randomNumber(min, max){
+	return Math.random() * (max - min) + min
 }
 
 function setTimer () {
