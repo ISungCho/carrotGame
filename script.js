@@ -9,16 +9,16 @@ let status = READY_STATUS
 let count = START_COUNT
 let time = START_TIME
 
-const playButton = document.querySelector('#play_button')
-const replayButton = document.querySelector('#replay_button')
+const playButton = document.querySelector('.game__button')
+const replayButton = document.querySelector('.pop-up__refresh')
 
-const timerClass = document.querySelector('.timer')
-const counterClass = document.querySelector('.counter')
+const timerClass = document.querySelector('.game__timer')
+const counterClass = document.querySelector('.game__count')
 
-const resultArea = document.querySelector('.result_area')
-const resultText = document.querySelector('.result_text')
+const resultArea = document.querySelector('.pop-up')
+const resultText = document.querySelector('.pop-up__message')
 
-const bottomArea = document.querySelector('.bottom_area')
+const bottomArea = document.querySelector('.game__field')
 const bottomAreaPos = bottomArea.getBoundingClientRect()
 
 const carrotSound = new Audio('./sound/carrot_pull.mp3')
