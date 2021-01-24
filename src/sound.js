@@ -6,27 +6,27 @@ const winSound = new Audio('./sound/game_win.mp3')
 const alertSound = new Audio('./sound/alert.wav')
 const bgSound = new Audio('./sound/bg.mp3')
 
-export function playCarrotSound() {
+export function playCarrot() {
 	playSound(carrotSound)
 }
 
-export function playBugSound() {
+export function playBug() {
 	playSound(bugSound)
 }
 
-export function playWinSound() {
+export function playWin() {
 	playSound(winSound)
 }
 
-export function playAlertSound() {
+export function playAlert() {
 	playSound(alertSound)
 }
 
-export function playBackgroundSound(){
+export function playBackground(){
 	playSound(bgSound)
 }
 
-export function stopBackgroundSound(){
+export function stopBackground(){
 	stopSound(bgSound)
 }
 

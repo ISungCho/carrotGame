@@ -1,7 +1,13 @@
 'use strict'
 
-import Field from './field.js'
+import Field, { ItemType } from './field.js'
 import * as sound from './sound.js'
+
+export const Reason = Object.freeze({
+	win: 'win',
+	lose: 'lose',
+	cancel: 'cancel'
+})
 
 export default class GameBuilder {
 	setDuration (duration) {
@@ -49,19 +55,19 @@ class Game {
 
 	onItemClick = (item) => {
 		if(!this.started) return 
-		if(item === 'carrot'){
+		if(item === ItemType.carrot){
 			this._updateGameCounter(this.count - 1)
 			if(this.count <= 0){
-				this.finishGame(true)
+				this.stop(Reason.win)
 			}
-		} else if(item === 'bug'){
-			this.finishGame()
+		} else if(item === ItemType.bug){
+			this.stop(Reason.lose)
 		}
 	}
 
 	onPlay = () => {
 		if(this.started){
-			this.stop()
+			this.stop(Reason.cancel)
 		} else{
 			this.start()
 		}
@@ -73,29 +79,15 @@ class Game {
 		this._showStopButton()
 		this._showTimerAndScore()
 		this._startGameTimer()
-		sound.playBackgroundSound()
+		sound.playBackground()
 	}
 
-	stop (){
+	stop(reason) {
 		this.started = false
 		this._stopGameTimer()
 		this._hidePlayButton();
-		this.onGameStop && this.onGameStop('cancel')
-		sound.playAlertSound()
-		sound.stopBackgroundSound()
-	}
-
-	finishGame(win){
-		this.started = false;
-		this._hidePlayButton()
-		if(win){
-			sound.playWinSound()
-		} else {
-			sound.playBugSound()
-		}
-		this._stopGameTimer()
-		sound.stopBackgroundSound()
-		this.onGameStop && this.onGameStop(win ? 'win' : 'lose')
+		this.onGameStop && this.onGameStop(reason)
+		sound.stopBackground()
 	}
 
 	_initGame () {
@@ -131,7 +123,7 @@ class Game {
 			this._updateTimerText(remainingTimeSec--)
 			if(remainingTimeSec <= 0){
 				this._stopGameTimer()
-				this.finishGame(this.count <= 0)
+				this.stop(this.count <= 0 ? Reason.win : Reason.lose)
 				return 
 			}
 		}, 1000)

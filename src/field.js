@@ -3,6 +3,11 @@
 import * as sound from './sound.js'
 
 const ITEM_SIZE = 60
+
+export const ItemType = Object.freeze({
+	carrot: 'carrot',
+	bug: 'bug'
+})
 export default class Field {
 	constructor(carrotCount, bugCount){
 		this.carrotCount = carrotCount
@@ -19,17 +24,17 @@ export default class Field {
 
 	init() {
 		this.field.innerHTML = '';
-		this._addItem('carrot', this.carrotCount)
-		this._addItem('bug', this.bugCount)
+		this._addItem(ItemType.carrot, this.carrotCount)
+		this._addItem(ItemType.bug, this.bugCount)
 	}
 
 	onClick = (e) => {
 		if(e.target.className.includes('carrot')){
 			this.field.removeChild(e.target.parentNode)
-			sound.playCarrotSound()
-			this.onItemClick && this.onItemClick('carrot')
+			sound.playCarrot()
+			this.onItemClick && this.onItemClick(ItemType.carrot)
 		} else if(e.target.className.includes('bug')){
-			this.onItemClick && this.onItemClick('bug')
+			this.onItemClick && this.onItemClick(ItemType.bug)
 		}
 	}
 
