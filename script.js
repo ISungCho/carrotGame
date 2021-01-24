@@ -18,12 +18,12 @@ const popUpRefresh = document.querySelector('.pop-up__refresh')
 const carrotSound = new Audio('./sound/carrot_pull.mp3')
 const bugSound = new Audio('./sound/bug_pull.mp3')
 const winSound = new Audio('./sound/game_win.mp3')
-const alertSound = new Audio('./sound/alert.mp3')
+const alertSound = new Audio('./sound/alert.wav')
 const bgSound = new Audio('./sound/bg.mp3')
 
 let started = false
 let count = CARROT_COUNT
-let time = GAME_DURATION_SEC
+let timer = undefined
 
 popUpRefresh.addEventListener('click', () => {
 		startGame()
@@ -38,21 +38,6 @@ playButton.addEventListener('click', (e) => {
 })
 
 field.addEventListener('click', onFieldClick)
-
-function onFieldClick (e) {
-	if(!started) return 
-	if(e.target.className.includes('carrot')){
-		count--
-		gameCounter.innerHTML = count
-		playSound(carrotSound)
-		if(count <= 0){
-			finishGame(true)
-		}
-		field.removeChild(e.target.parentNode)
-	} else if(e.target.className.includes('bug')){
-		finishGame()
-	}
-}
 
 function startGame () {
 	started = true
@@ -73,12 +58,12 @@ function stopGame (){
 }
 
 function finishGame(win){
-	start = false;
-	hideGameButton()
+	started = false;
+	hidePlayButton()
 	if(win){
 		playSound(winSound)
 	} else {
-		playSound(alertSound)
+		playSound(bugSound)
 	}
 	stopGameTimer()
 	stopSound(bgSound)
@@ -88,8 +73,6 @@ function finishGame(win){
 
 function hidePopUp() {
 	popUp.classList.add('pop-up--hide')
-	playButton.style.visibility = 'visible'
-	field.innerHTML = ''
 }
 
 function showPopUp(text){
@@ -137,8 +120,28 @@ function updateTimerText (time) {
 }
 
 function initGame () {
+  field.innerHTML = '';
+	updateGameCounter(CARROT_COUNT)
 	addItem('carrot', CARROT_COUNT)
 	addItem('bug', BUG_COUNT)
+}
+function onFieldClick (e) {
+	if(!started) return 
+	if(e.target.className.includes('carrot')){
+		field.removeChild(e.target.parentNode)
+		updateGameCounter(count - 1)
+		playSound(carrotSound)
+		if(count <= 0){
+			finishGame(true)
+		}
+	} else if(e.target.className.includes('bug')){
+		finishGame()
+	}
+}
+
+function updateGameCounter (carrotCount) {
+	count = carrotCount
+	gameCounter.innerHTML = count
 }
 
 function addItem (itemName, count){
