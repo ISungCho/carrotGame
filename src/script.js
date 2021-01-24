@@ -1,5 +1,7 @@
 'use strict'
 
+import PopUp from './popup.js'
+
 const ITEM_SIZE = 60
 const CARROT_COUNT = 10
 const BUG_COUNT = 10
@@ -11,10 +13,6 @@ const playButton = document.querySelector('.game__button')
 const timerIndicator = document.querySelector('.game__timer')
 const gameCounter = document.querySelector('.game__count')
 
-const popUp = document.querySelector('.pop-up')
-const popUpText = document.querySelector('.pop-up__message')
-const popUpRefresh = document.querySelector('.pop-up__refresh')
-
 const carrotSound = new Audio('./sound/carrot_pull.mp3')
 const bugSound = new Audio('./sound/bug_pull.mp3')
 const winSound = new Audio('./sound/game_win.mp3')
@@ -25,10 +23,9 @@ let started = false
 let count = CARROT_COUNT
 let timer = undefined
 
-popUpRefresh.addEventListener('click', () => {
-		startGame()
-		hidePopUp()
-})
+const gameFinishBanner = new PopUp()
+
+gameFinishBanner.setClickListener(() => startGame())
 playButton.addEventListener('click', (e) => {
 	if(started){
 		stopGame()
@@ -52,7 +49,7 @@ function stopGame (){
 	started = false
 	stopGameTimer()
 	hidePlayButton();
-	showPopUp('REPLAY❓')
+	gameFinishBanner.showWithText('REPLAY❓')
 	playSound(alertSound)
 	stopSound(bgSound)
 }
@@ -67,17 +64,8 @@ function finishGame(win){
 	}
 	stopGameTimer()
 	stopSound(bgSound)
-	showPopUp(win ? 'YOU WON 🎉' : 'YOU LOST 💩')
+	gameFinishBanner.showWithText(win ? 'YOU WON 🎉' : 'YOU LOST 💩')
 
-}
-
-function hidePopUp() {
-	popUp.classList.add('pop-up--hide')
-}
-
-function showPopUp(text){
-	popUpText.innerHTML = text
-	popUp.classList.remove('pop-up--hide')
 }
 
 function hidePlayButton() {
