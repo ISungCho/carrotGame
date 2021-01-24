@@ -1,11 +1,11 @@
 'use strict'
 
 import Game from './game.js'
+import PopUp from './popup.js'
 
-const CARROT_COUNT = 10
-const BUG_COUNT = 10
-const GAME_DURATION_SEC = 10
+const gameFinishBanner = new PopUp()
+const game = new Game(10, 10, 10)
 
-
-const game = new Game(CARROT_COUNT, BUG_COUNT, GAME_DURATION_SEC)
+gameFinishBanner.setClickListener(() => game.start())
+game.setClickListener((text) => gameFinishBanner.showWithText(text))
 

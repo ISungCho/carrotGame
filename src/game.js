@@ -1,27 +1,29 @@
 'use strict'
 
 import Field from './field.js'
-import PopUp from './popup.js'
 import * as sound from './sound.js'
 
 export default class Game {
-	constructor(carrotCount, bugCount, gameDurationSec){
-		this.started = false
+	constructor(carrotCount, bugCount, gameDuration){
 		this.carrotCount = carrotCount
-		this.gameDurationSec = gameDurationSec
+		this.gameDuration = gameDuration
+
+		this.started = false
 		this.count = carrotCount
 		this.timer = undefined
-
-		this.gameField = new Field(carrotCount, bugCount)
-		this.gameFinishBanner = new PopUp()
 
 		this.playButton = document.querySelector('.game__button')
 		this.timerIndicator = document.querySelector('.game__timer')
 		this.gameCounter = document.querySelector('.game__count')
 
+		this.gameField = new Field(carrotCount, bugCount)
 		this.gameField.setClickListener(this.onItemClick)
-		this.gameFinishBanner.setClickListener(() => this.startGame())
+
 		this.playButton.addEventListener('click', this.onPlay)
+	}
+
+	setClickListener(onGameStop) {
+		this.onGameStop = onGameStop
 	}
 
 	onItemClick = (item) => {
@@ -38,13 +40,13 @@ export default class Game {
 
 	onPlay = () => {
 		if(this.started){
-			this.stopGame()
+			this.stop()
 		} else{
-			this.startGame()
+			this.start()
 		}
 	}
 
-	startGame () {
+	start () {
 		this.started = true
 		this._initGame()
 		this._showStopButton()
@@ -53,11 +55,11 @@ export default class Game {
 		sound.playBackgroundSound()
 	}
 
-	stopGame (){
+	stop (){
 		this.started = false
 		this._stopGameTimer()
 		this._hidePlayButton();
-		this.gameFinishBanner.showWithText('REPLAY❓')
+		this.onGameStop && this.onGameStop('REPLAY❓')
 		sound.playAlertSound()
 		sound.stopBackgroundSound()
 	}
@@ -72,7 +74,7 @@ export default class Game {
 		}
 		this._stopGameTimer()
 		sound.stopBackgroundSound()
-		this.gameFinishBanner.showWithText(win ? 'YOU WON 🎉' : 'YOU LOST 💩')
+		this.onGameStop && this.onGameStop(win ? 'YOU WON 🎉' : 'YOU LOST 💩')
 	}
 
 	_initGame () {
@@ -102,7 +104,7 @@ export default class Game {
 	}
 
 	_startGameTimer () {
-		let remainingTimeSec = this.gameDurationSec
+		let remainingTimeSec = this.gameDuration
 		this._updateTimerText(remainingTimeSec)
 		this.timer = setInterval(() => {
 			this._updateTimerText(remainingTimeSec--)
