@@ -1,5 +1,5 @@
-'use strict' +
-''
+'use strict'
+
 const ITEM_SIZE = 60
 const CARROT_COUNT = 10
 const BUG_COUNT = 10
@@ -25,22 +25,14 @@ let started = false
 let count = CARROT_COUNT
 let time = GAME_DURATION_SEC
 
-popUpRefresh.addEventListener('click', (e) => {
-	if(!started){
-		started = true
-		popUp.style.visibility = 'hidden'
-		playButton.style.visibility = 'visible'
-		field.innerHTML = ''
+popUpRefresh.addEventListener('click', () => {
 		startGame()
-	}
+		hidePopUp()
 })
 playButton.addEventListener('click', (e) => {
 	if(started){
-		started = false
-		playButton.innerHTML = '<i class="fas fa-play"></i>'
+		stopGame()
 	} else{
-		started = true
-		playButton.innerHTML = '<i class="fas fa-stop"></i>'
 		startGame()
 	}
 })
@@ -54,26 +46,94 @@ function onFieldClick (e) {
 		gameCounter.innerHTML = count
 		playSound(carrotSound)
 		if(count <= 0){
-			started = false
-			popUpText.innerHTML = 'YOU WIN!'
-			playSound(winSound)
+			finishGame(true)
 		}
-		field.removeChild(e.target.parentNode) 
+		field.removeChild(e.target.parentNode)
 	} else if(e.target.className.includes('bug')){
-		started = false
-		playSound(bugSound)
-		popUpText.innerHTML = 'YOU LOSE!'
+		finishGame()
 	}
 }
 
 function startGame () {
-	time = GAME_DURATION_SEC
-	count = CARROT_COUNT
-	timerIndicator.innerHTML = `00:${GAME_DURATION_SEC}`
-	gameCounter.innerHTML = CARROT_COUNT
-	setTimer()
+	started = true
 	initGame()
+	showStopButton()
+	showTimerAndScore()
+	startGameTimer()
 	playSound(bgSound)
+}
+
+function stopGame (){
+	started = false
+	stopGameTimer()
+	hidePlayButton();
+	showPopUp('REPLAY❓')
+	playSound(alertSound)
+	stopSound(bgSound)
+}
+
+function finishGame(win){
+	start = false;
+	hideGameButton()
+	if(win){
+		playSound(winSound)
+	} else {
+		playSound(alertSound)
+	}
+	stopGameTimer()
+	stopSound(bgSound)
+	showPopUp(win ? 'YOU WON 🎉' : 'YOU LOST 💩')
+
+}
+
+function hidePopUp() {
+	popUp.classList.add('pop-up--hide')
+	playButton.style.visibility = 'visible'
+	field.innerHTML = ''
+}
+
+function showPopUp(text){
+	popUpText.innerHTML = text
+	popUp.classList.remove('pop-up--hide')
+}
+
+function hidePlayButton() {
+	playButton.style.visibility = 'hidden'
+}
+
+function showStopButton() {
+	const icon = playButton.querySelector('.fas')
+	icon.classList.add('fa-stop')
+	icon.classList.remove('fa-play')
+	playButton.style.visibility = 'visible'
+}
+
+function showTimerAndScore () {
+	timerIndicator.style.visibility = 'visible'
+	gameCounter.style.visibility = 'visible'
+}
+
+function startGameTimer () {
+	let remainingTimeSec = GAME_DURATION_SEC
+	updateTimerText(remainingTimeSec)
+	timer = setInterval(() => {
+		updateTimerText(remainingTimeSec--)
+		if(remainingTimeSec <= 0){
+			stopGameTimer()
+			finishGame(count <= 0)
+			return 
+		}
+	}, 1000)
+
+}
+
+function stopGameTimer() {
+  clearInterval(timer);
+}
+function updateTimerText (time) {
+	const minutes = Math.floor(time / 60)
+	const seconds = time % 60
+	timerIndicator.innerHTML = `${minutes}:${seconds}`
 }
 
 function initGame () {
@@ -108,26 +168,4 @@ function playSound(sound){
 
 function stopSound(sound){
 	sound.pause()
-}
-
-function setTimer () {
-	const timer = setInterval(() => {
-		if(started){
-			let timeText = GAME_DURATION_SEC
-			time -= 1
-			if(time < 0){
-				started = false
-				popUpText.innerHTML = 'YOU LOSE!'
-			} else if(time < 10){
-				timeText = '0' + time
-				timerIndicator.innerHTML = `00:${timeText}`
-			}
-		} else {
-			popUp.style.visibility = 'visible'
-			playButton.style.visibility = 'hidden'
-			clearInterval(timer)
-			stopSound(bgSound)
-			return
-		}
-	}, 1000)
 }
