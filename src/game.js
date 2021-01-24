@@ -59,7 +59,7 @@ export default class Game {
 		this.started = false
 		this._stopGameTimer()
 		this._hidePlayButton();
-		this.onGameStop && this.onGameStop('REPLAY❓')
+		this.onGameStop && this.onGameStop('cancel')
 		sound.playAlertSound()
 		sound.stopBackgroundSound()
 	}
@@ -74,7 +74,7 @@ export default class Game {
 		}
 		this._stopGameTimer()
 		sound.stopBackgroundSound()
-		this.onGameStop && this.onGameStop(win ? 'YOU WON 🎉' : 'YOU LOST 💩')
+		this.onGameStop && this.onGameStop(win ? 'win' : 'lose')
 	}
 
 	_initGame () {
