@@ -1,14 +1,13 @@
 'use strict'
 
-const carrotSound = new Audio('./sound/carrot_pull.mp3')
+import * as sound from './sound.js'
+
 const ITEM_SIZE = 60
 export default class Field {
 	constructor(carrotCount, bugCount){
 		this.carrotCount = carrotCount
 		this.bugCount = bugCount
-
 		this.field = document.querySelector('.game__field')
-
 		this.fieldRect = this.field.getBoundingClientRect()
 		this.field.addEventListener('click', this.onClick)
 
@@ -27,7 +26,7 @@ export default class Field {
 	onClick = (e) => {
 		if(e.target.className.includes('carrot')){
 			this.field.removeChild(e.target.parentNode)
-			playSound(carrotSound)
+			sound.playCarrotSound()
 			this.onItemClick && this.onItemClick('carrot')
 		} else if(e.target.className.includes('bug')){
 			this.onItemClick && this.onItemClick('bug')
@@ -54,9 +53,4 @@ export default class Field {
 
 function randomNumber(min, max){
 	return Math.random() * (max - min) + min
-}
-
-function playSound(sound){
-	sound.currentTime = 0
-	sound.play()
 }
